@@ -68,14 +68,35 @@ class Platform(pg.sprite.Sprite):
         self._layer = 2
         pg.sprite.Sprite.__init__(self)
         self.game = game
-        images = [pg.image.load(PLATFORM_GREEN).convert(), pg.image.load(PLATFORM_BLUE)]
+        images = [pg.image.load(PLATFORM_GREEN).convert(), pg.image.load(PLATFORM_BLUE),
+                  pg.image.load(PLATFORM_BROWN_1), pg.image.load(PLATFORM_BROWN_2)]
+
         images[0].set_colorkey(BLACK)
-        self.image = choice(images)
+        self.number = randrange(0,100)
+        if self.number<50:
+            self.type = 'green'
+            self.image = images[0]
+        elif 50<self.number<75:
+            self.type = 'blue'
+            self.image = images[1]
+        else:
+            self.type = 'brown'
+            self.image = images[2]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.vx = randrange(1,4)
+        self.number = randrange(0, 100, 2)
+
         if randrange(100) < SPRING_POSSIBILITY:
             Spring(self.game, self)
+
+    def update(self, *args):
+        if self.type == 'blue':
+            self.rect.x += self.vx
+            if self.rect.x > WIDTH - 50 or self.rect.x < 0:
+                self.vx *= -1
+
 
 
 class Background(pg.sprite.Sprite):
