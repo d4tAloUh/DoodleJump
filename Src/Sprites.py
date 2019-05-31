@@ -7,7 +7,7 @@ vec = pg.math.Vector2
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, game):
+    def __init__(self, game, x, y):
         self._layer = 1
         pg.sprite.Sprite.__init__(self)
         self.game = game  #
@@ -16,7 +16,7 @@ class Player(pg.sprite.Sprite):
         self.image = self.side_frames[0]
         # self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH / 2, HEIGHT - 40)
+        self.rect.center = (x, y)
         self.pos = vec(WIDTH / 2, HEIGHT - 50)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
@@ -65,7 +65,7 @@ class Player(pg.sprite.Sprite):
 
 class Platform(pg.sprite.Sprite):
     def __init__(self, game, x, y, brown=False):
-        self.brown = brown
+        self.collision = brown
         self._layer = 2
         self.moment = 0
         pg.sprite.Sprite.__init__(self)
@@ -96,7 +96,7 @@ class Platform(pg.sprite.Sprite):
             Spring(self.game, self)
 
     def set_brown(self, brown):
-        self.brown = brown
+        self.collision = brown
 
     def update(self, *args):
 
@@ -104,26 +104,22 @@ class Platform(pg.sprite.Sprite):
             self.rect.x += self.vx
             if self.rect.x > WIDTH - 50 or self.rect.x < 0:
                 self.vx *= -1
-        # if self.type == 'brown':
-        # if ()
-        if self.brown:
-            if self.type == 'brown':
+        if self.type == 'brown':
+            if self.collision:
                 self.animate()
 
     def animate(self):
-        if self.brown:
-            now = pg.time.get_ticks()
-            if now - self.moment > 150:
-                self.moment = now
-                self.current_frame = (self.current_frame + 1)
-                bottom = self.rect.bottom
-                self.image = self.brown[self.current_frame]
-                self.rect = self.image.get_rect()
-                self.rect.bottom = bottom
-                if self.current_frame == 5:
-                    self.kill()
-        else:
-            return
+
+        now = pg.time.get_ticks()
+        if now - self.moment > 40:
+            self.moment = now
+            self.current_frame = (self.current_frame + 1)
+            center = self.rect.center
+            self.image = self.brown[self.current_frame]
+            self.rect = self.image.get_rect()
+            self.rect.center = center
+            if self.current_frame == 5:
+                self.kill()
 
 
 class Background(pg.sprite.Sprite):

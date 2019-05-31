@@ -38,7 +38,7 @@ class Game:
         self.springs = pg.sprite.Group()
         self.monsters = pg.sprite.Group()
 
-        self.player = Player(self)
+        self.player = Player(self, WIDTH / 2, HEIGHT - 40)
         self.background = Background(BACKGROUND)
         self.background_skies = Background(BACKGROUND_SKIES)
         self.platfor_amount = PLATFORM_AMOUNT
@@ -176,10 +176,11 @@ class Game:
         # game splash/start screen
         self.start_button = Button(self.screen, 72, 150, "esjketit", (255, 255, 255), 150, 70)
         self.start_sprite.draw(self.screen)
+        self.start_button = Button(self.screen, 133, 230, "esjketit", (255, 255, 255), 150, 70)
         # self.draw_text(TITLE, 48, WHITE, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Use left and right keys to move", 36, BLACK, WIDTH / 2, HEIGHT * 2.5 / 4 + 30)
         self.draw_text("and up key to shoot", 36, BLACK, WIDTH / 2 + 20, HEIGHT * 2 / 3 + 50)
-        self.draw_text("Press SPACE to start", 36, BLACK, WIDTH / 2, HEIGHT / 2.5)
+        # self.draw_text("Press SPACE to start", 36, BLACK, WIDTH / 2, HEIGHT / 2.5)
         self.draw_text("Highscore: " + str(self.highscore), 22, RED, WIDTH * 3 / 4 + 10, HEIGHT / 4 + 20)
         pg.display.flip()
         self.wait_for_key()

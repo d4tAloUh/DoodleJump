@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="37682f90-f711-482e-9a7c-9d1216acdd9d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/Src/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Src/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Src/Settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Src/Settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Src/Sprites.py" beforeDir="false" afterPath="$PROJECT_DIR$/Src/Sprites.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -37,11 +36,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Src/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="84" column="46" selection-start-line="84" selection-start-column="46" selection-end-line="84" selection-end-column="46" />
+            <state relative-caret-position="-327">
+              <caret line="87" column="44" selection-start-line="87" selection-start-column="44" selection-end-line="87" selection-end-column="44" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -49,11 +48,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Src/Sprites.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="109" column="12" selection-start-line="109" selection-start-column="12" selection-end-line="109" selection-end-column="26" />
+            <state relative-caret-position="342">
+              <caret line="113" column="33" selection-start-line="113" selection-start-column="33" selection-end-line="113" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -308,12 +307,12 @@
       <updated>1559034678139</updated>
       <workItem from="1559034681000" duration="14519000" />
       <workItem from="1559122287845" duration="25905000" />
-      <workItem from="1559295803631" duration="16685000" />
+      <workItem from="1559295803631" duration="17732000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="57109000" />
+    <option name="totallyTimeSpent" value="58156000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -348,7 +347,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/DooodleJump$test__1_.coverage" NAME="test (1) Coverage Results" MODIFIED="1559122437762" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/DooodleJump$MainMenu.coverage" NAME="MainMenu Coverage Results" MODIFIED="1559042018086" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Src" />
-    <SUITE FILE_PATH="coverage/DooodleJump$Main.coverage" NAME="Main Coverage Results" MODIFIED="1559315629600" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Src" />
+    <SUITE FILE_PATH="coverage/DooodleJump$Main.coverage" NAME="Main Coverage Results" MODIFIED="1559318279342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Src" />
     <SUITE FILE_PATH="coverage/DooodleJump$check.coverage" NAME="check Coverage Results" MODIFIED="1559041266271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Src" />
     <SUITE FILE_PATH="coverage/DooodleJump$test.coverage" NAME="test Coverage Results" MODIFIED="1559058438712" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Src" />
     <SUITE FILE_PATH="coverage/DooodleJump$Settings.coverage" NAME="Settings Coverage Results" MODIFIED="1559299309916" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Src" />
@@ -422,20 +421,20 @@
     <entry file="file://$PROJECT_DIR$/Src/highscore.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/Src/Main.py">
+    <entry file="file://$PROJECT_DIR$/Src/Sprites.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="84" column="46" selection-start-line="84" selection-start-column="46" selection-end-line="84" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="342">
+          <caret line="113" column="33" selection-start-line="113" selection-start-column="33" selection-end-line="113" selection-end-column="33" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Src/Sprites.py">
+    <entry file="file://$PROJECT_DIR$/Src/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="109" column="12" selection-start-line="109" selection-start-column="12" selection-end-line="109" selection-end-column="26" />
+        <state relative-caret-position="-327">
+          <caret line="87" column="44" selection-start-line="87" selection-start-column="44" selection-end-line="87" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
