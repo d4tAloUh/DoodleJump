@@ -64,7 +64,8 @@ class Player(pg.sprite.Sprite):
 
 
 class Platform(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, brown=False):
+        self.brown = brown
         self._layer = 2
         self.moment = 0
         pg.sprite.Sprite.__init__(self)
@@ -94,26 +95,35 @@ class Platform(pg.sprite.Sprite):
         if self.type == 'green' and randrange(100) < SPRING_POSSIBILITY:
             Spring(self.game, self)
 
+    def set_brown(self, brown):
+        self.brown = brown
+
     def update(self, *args):
-        now = pg.time.get_ticks()
+
         if self.type == 'blue':
             self.rect.x += self.vx
             if self.rect.x > WIDTH - 50 or self.rect.x < 0:
                 self.vx *= -1
         # if self.type == 'brown':
         # if ()
-        # self.animate(now)
+        if self.brown:
+            if self.type == 'brown':
+                self.animate()
 
-    def animate(self, now):
-        if now - self.moment > 350:
-            self.moment = now
-            self.current_frame = (self.current_frame + 1)
-            bottom = self.rect.bottom
-            self.image = self.brown[self.current_frame]
-            self.rect = self.image.get_rect()
-            self.rect.bottom = bottom
-            if self.current_frame == 6:
-                self.kill()
+    def animate(self):
+        if self.brown:
+            now = pg.time.get_ticks()
+            if now - self.moment > 150:
+                self.moment = now
+                self.current_frame = (self.current_frame + 1)
+                bottom = self.rect.bottom
+                self.image = self.brown[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom
+                if self.current_frame == 5:
+                    self.kill()
+        else:
+            return
 
 
 class Background(pg.sprite.Sprite):
@@ -215,10 +225,10 @@ class Bullet(pg.sprite.Sprite):
         if self.rect.bottom < 0:
             self.kill()
 
+
 class Button:
 
     def __init__(self, screen, x, y, text, color, width=70, height=40):
-
         self.screen = screen
         self.x = x
         self.y = y
@@ -230,7 +240,6 @@ class Button:
         self.show()
 
     def show(self):
-
         self.draw_button()
         self.write_text()
 
@@ -241,6 +250,5 @@ class Button:
                                  (self.y + self.height / 2) - label.get_height() / 2))
 
     def draw_button(self):
-
         pg.draw.rect(self.screen, self.color, self.rect, 0)
         pg.draw.rect(self.screen, self.color, self.rect, 1)

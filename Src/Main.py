@@ -1,8 +1,6 @@
-import pygame as pg
 import random
-from Src.Settings import *
+
 from Src.Sprites import *
-from os import path
 
 
 class Game:
@@ -22,7 +20,10 @@ class Game:
 
     def new(self):
         # start a new game
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         self.score = 0
+        self.difficulty_counter = 1
+        self.monster_possibility = MONSTER_POSSIBILITY
         self.timer = 0
         self.bullet_timer = 0
         self.platform_timer = 0
@@ -39,16 +40,19 @@ class Game:
 
         self.player = Player(self)
         self.background = Background(BACKGROUND)
+        self.background_skies = Background(BACKGROUND_SKIES)
+        self.platfor_amount = PLATFORM_AMOUNT
 
         self.gameover = Background(GAMEOVER)
         self.all_sprites.add(self.player)
         self.background_sprite.add(self.background)
         self.gameover_sprite.add(self.gameover)
         self.start_sprite.add(self.start)
+        self.all_sprites.add(self.background_skies)
         self.all_sprites.add(self.background)
 
         for plat in PLATFORM_LIST:
-            p = Platform(self, *plat)
+            p = Platform(self, *plat, False)
             self.all_sprites.add(p)
             self.platforms.add(p)
 
@@ -78,8 +82,7 @@ class Game:
                 if self.player.pos.y > lowest.rect.centery:
                     if lowest.type == 'brown':
                         # lowest.animate(self.now)
-                        lowest.kill()
-                        i = 1
+                        lowest.set_brown(True)
                     else:
                         self.player.pos.y = lowest.rect.top
                         self.player.vel.y = 0
@@ -95,7 +98,7 @@ class Game:
                     plat.kill()
                     self.score += 10
         # Spawn monster
-        if self.now - self.timer > 5000 + random.choice([-1000, 1000, 500, 0, -500]):
+        if self.now - self.timer > self.monster_possibility + random.choice([-1000, 1000, 500, 0, -500]):
             self.timer = self.now
             Enemy(self)
         # Hit monster
@@ -104,9 +107,9 @@ class Game:
             self.playing = False
 
         # Create new platforms
-        while len(self.platforms) < PLATFORM_AMOUNT:
+        while len(self.platforms) < self.platfor_amount:
             width = random.randrange(75, 100)
-            p = Platform(self, random.randrange(0, WIDTH - width), random.randrange(-150, -30))
+            p = Platform(self, random.randrange(0, WIDTH - width), random.randrange(-150, -30), False)
             self.platforms.add(p)
             self.all_sprites.add(p)
 
@@ -118,6 +121,17 @@ class Game:
                     sprit.kill()
             if len(self.platforms) == 0:
                 self.playing = False
+
+        # Increase level difficulty
+        if self.score > 1000 and (self.score / 200) / 2 > self.difficulty_counter:
+            self.difficulty_counter += 2
+            if not self.platfor_amount == 8:
+                self.platfor_amount -= 1
+            if self.monster_possibility > 5000:
+                self.monster_possibility -= 100
+        if 2060 > self.score > 2000:
+            # self.all_sprites.add(self.background_skies)
+            self.all_sprites.remove(self.background)
 
         #     Collide with spring
         spring_hits = pg.sprite.spritecollide(self.player, self.springs, False)
@@ -164,9 +178,9 @@ class Game:
         self.start_sprite.draw(self.screen)
         # self.draw_text(TITLE, 48, WHITE, WIDTH / 2, HEIGHT / 4)
         self.draw_text("Use left and right keys to move", 36, BLACK, WIDTH / 2, HEIGHT * 2.5 / 4 + 30)
-        self.draw_text("and up key to shoot", 36, BLACK, WIDTH / 2 + 20, HEIGHT *2/3 + 50)
-        self.draw_text("Press SPACE to start", 36, BLACK, WIDTH / 2, HEIGHT /2.5)
-        self.draw_text("Highscore: " + str(self.highscore), 22,RED, WIDTH *3/4+ 10, HEIGHT /4 + 20)
+        self.draw_text("and up key to shoot", 36, BLACK, WIDTH / 2 + 20, HEIGHT * 2 / 3 + 50)
+        self.draw_text("Press SPACE to start", 36, BLACK, WIDTH / 2, HEIGHT / 2.5)
+        self.draw_text("Highscore: " + str(self.highscore), 22, RED, WIDTH * 3 / 4 + 10, HEIGHT / 4 + 20)
         pg.display.flip()
         self.wait_for_key()
 
@@ -178,7 +192,7 @@ class Game:
 
         # self.draw_text("GAME OVER", 48, BLACK, WIDTH / 2, HEIGHT / 4)
         self.draw_text("" + str(self.score), 42, BROWN, WIDTH / 2 + 27, HEIGHT * 2 / 3 - 24)
-        self.draw_text("Press a key to play again", 36, BLACK, WIDTH / 2 + 60, HEIGHT * 3 / 4)
+        self.draw_text("Press space to play again", 36, BLACK, WIDTH / 2 + 60, HEIGHT * 3 / 4)
         if self.score > self.highscore:
             self.highscore = self.score
             self.draw_text("You have a new highscore!", 36, BLACK, WIDTH / 2 + 50, HEIGHT / 2 + 20)
@@ -222,9 +236,6 @@ class Game:
             self.highscore = int(score_str)
         except:
             self.highscore = 0
-
-
-
 
 
 g = Game()

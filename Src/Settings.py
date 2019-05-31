@@ -8,23 +8,23 @@ HIGHSCORE = "highscore.txt"
 
 # Player properties
 PLAYER_GRAVITY = 0.3
-PLAYER_ACC = 0.3
-PLAYER_FRICTION = -0.12
-PlAYER_JUMP = 20
+PLAYER_ACC = 0.40
+PLAYER_FRICTION = -0.09
+PlAYER_JUMP = 22.5
 
 # Starting platforms
 PLATFORM_LIST = [(WIDTH/2 - 40, HEIGHT - 40), (0, HEIGHT / 2),
                  (WIDTH/3, HEIGHT / 3), (WIDTH/2 + 40, HEIGHT / 4 - 15),
                  (WIDTH/4, HEIGHT / 5), (WIDTH/1.5, HEIGHT / 1.5), (WIDTH/1.25, HEIGHT / 1.25)]
 
-PLATFORM_AMOUNT = 10
+PLATFORM_AMOUNT = 15
 
 # Spring
 BOOST = 30
 SPRING_POSSIBILITY = 10
 
 # Monsters
-MONSTER_POSSIBILITY = 5000
+MONSTER_POSSIBILITY = 9000
 
 # define colors
 WHITE = (255, 255, 255)
@@ -39,6 +39,7 @@ BGCOLOR = LIGHTBLUE
 
 # Images
 BACKGROUND = "../resources/background.png"
+BACKGROUND_SKIES = "../resources/background_skies.png"
 START = "../resources/intro0.png"
 DOODLE_LEFT = "../resources/Doodle_left.png"
 DOODLE_UP = "../resources/Doodle_upward.png"
