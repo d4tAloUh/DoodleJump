@@ -20,7 +20,9 @@ class Game:
         # start a new game
         self.score = 0
         self.timer = 0
+        self.bullet_timer = 0
         self.all_sprites = pg.sprite.Group()
+        self.bullets = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.background_sprite = pg.sprite.Group()
         self.gameover_sprite = pg.sprite.Group()
@@ -28,13 +30,15 @@ class Game:
         self.monsters = pg.sprite.Group()
 
         self.player = Player(self)
-
+        # self.topbar = Background(TOPBAR)
         self.background = Background(BACKGROUND)
         self.gameover = Background(GAMEOVER)
         self.all_sprites.add(self.player)
         self.background_sprite.add(self.background)
+        # self.background_sprite.add(self.topbar)
         self.gameover_sprite.add(self.gameover)
         self.all_sprites.add(self.background)
+        # self.all_sprites.add(self.topbar)
 
         for plat in PLATFORM_LIST:
             p = Platform(self, *plat)
@@ -55,6 +59,7 @@ class Game:
     def update(self):
         # Game Loop - Update
         self.all_sprites.update()
+        self.now = pg.time.get_ticks()
         # check if player hits platform
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player, self.platforms, False)
@@ -78,9 +83,8 @@ class Game:
                     plat.kill()
                     self.score += 10
         # Spawn monster
-        now = pg.time.get_ticks()
-        if now - self.timer > 5000 + random.choice([-1000, 1000, 500, 0, -500]):
-            self.timer = now
+        if self.now - self.timer > 5000 + random.choice([-1000, 1000, 500, 0, -500]):
+            self.timer = self.now
             Enemy(self)
         # Hit monster
         mob_hits = pg.sprite.spritecollide(self.player, self.monsters, False, pg.sprite.collide_mask)
@@ -110,6 +114,12 @@ class Game:
                 spring.animate()
                 self.player.vel.y = - BOOST
 
+    #     Monster collide with bullet
+        bullet_hits = pg.sprite.groupcollide(self.bullets, self.monsters, True, True)
+        for hit in bullet_hits:
+            hit.kill()
+            self.score += 50
+
     def events(self):
 
         # Game Loop - events
@@ -123,6 +133,10 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     self.player.jump()
+                if event.key == pg.K_UP:
+                    if self.now - self.bullet_timer > 500:
+                        self.bullet_timer = self.now
+                        Bullet(self, self.player)
 
     def draw(self):
         # Game Loop - draw

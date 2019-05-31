@@ -7,8 +7,8 @@ FONT_NAME = 'arial'
 HIGHSCORE = "highscore.txt"
 
 # Player properties
-PLAYER_GRAVITY = 0.5
-PLAYER_ACC = 0.5
+PLAYER_GRAVITY = 0.3
+PLAYER_ACC = 0.3
 PLAYER_FRICTION = -0.12
 PlAYER_JUMP = 20
 
@@ -39,7 +39,9 @@ BGCOLOR = LIGHTBLUE
 
 # Images
 BACKGROUND = "../resources/background.png"
+TOPBAR = "../resources/topbar.png"
 DOODLE_LEFT = "../resources/Doodle_left.png"
+DOODLE_UP = "../resources/Doodle_upward.png"
 DOODLE_RIGHT = "../resources/Doodle_right.png"
 PLATFORM_GREEN = "../resources/p-green.png"
 PLATFORM_BLUE = "../resources/p-blue.png"
@@ -48,3 +50,6 @@ SPRING_ON = "../resources/spring.png"
 SPRING_OFF = "../resources/spring_comp.png"
 MONSTER_UP = "../resources/bat1.png"
 MONSTER_DOWN = "../resources/bat3.png"
+BULLET = "../resources/bullet.png"
+
+

@@ -10,8 +10,9 @@ class Player(pg.sprite.Sprite):
     def __init__(self, game):
         self._layer = 1
         pg.sprite.Sprite.__init__(self)
-        self.game = game
-        self.side_frames = [pg.image.load(DOODLE_RIGHT), pg.image.load(DOODLE_LEFT)]
+        self.game = game  #
+        self.last_tick = 0
+        self.side_frames = [pg.image.load(DOODLE_RIGHT), pg.image.load(DOODLE_LEFT), pg.image.load(DOODLE_UP)]
         self.image = self.side_frames[0]
         # self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
@@ -22,6 +23,7 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         self.acc = vec(0, 0.7)
+        now = pg.time.get_ticks()
         keys = pg.key.get_pressed()
         bottom = self.rect.bottom
         if keys[pg.K_LEFT]:
@@ -30,6 +32,11 @@ class Player(pg.sprite.Sprite):
         if keys[pg.K_RIGHT]:
             self.acc.x = PLAYER_ACC
             self.image = self.side_frames[0]
+        if keys[pg.K_UP]:
+            self.image = self.side_frames[2]
+            if now - self.last_tick > 300:
+                self.last_tick = now
+                self.image = self.side_frames[1]
         self.rect = self.image.get_rect()
         self.rect.bottom = bottom
 
@@ -123,7 +130,7 @@ class Enemy(pg.sprite.Sprite):
         self.image = self.images[0]
         self.rect = self.image.get_rect()
         self.rect.centerx = choice([-100, WIDTH + 100])
-        self.vx = randrange(3,6)
+        self.vx = randrange(3, 6)
         if self.rect.centerx > WIDTH:
             self.vx *= -1
         self.rect.y = randrange(HEIGHT / 2)
@@ -145,4 +152,27 @@ class Enemy(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
         self.rect.y += self.vy
         if self.rect.left > WIDTH + 100 or self.rect.right < -100:
+            self.kill()
+
+
+class Bullet(pg.sprite.Sprite):
+    def __init__(self, game, player):
+        self._layer = 1
+        self.groups = game.bullets, game.all_sprites
+
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.image.load(BULLET)
+        self.rect = self.image.get_rect()
+        self.rect.x = player.rect.centerx
+        self.rect.bottom = player.rect.top
+        self.vy = -8
+        # self.dy =
+
+    def update(self, *args):
+        # if self.vy > -8:
+        #     self.vy -= self.dy
+        # self.mask = pg.mask.from_surface(self.image)
+        self.rect.y += self.vy
+        if self.rect.bottom < 0:
             self.kill()
