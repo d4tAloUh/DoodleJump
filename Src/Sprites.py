@@ -66,37 +66,54 @@ class Player(pg.sprite.Sprite):
 class Platform(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self._layer = 2
+        self.moment = 0
         pg.sprite.Sprite.__init__(self)
         self.game = game
-        images = [pg.image.load(PLATFORM_GREEN).convert(), pg.image.load(PLATFORM_BLUE),
-                  pg.image.load(PLATFORM_BROWN_1), pg.image.load(PLATFORM_BROWN_2)]
-
-        images[0].set_colorkey(BLACK)
-        self.number = randrange(0,100)
-        if self.number<50:
+        self.images = [pg.image.load(PLATFORM_GREEN).convert(), pg.image.load(PLATFORM_BLUE)]
+        self.brown = [pg.image.load(PLATFORM_BROWN_1), pg.image.load(PLATFORM_BROWN_2),
+                      pg.image.load(PLATFORM_BROWN_3), pg.image.load(PLATFORM_BROWN_4),
+                      pg.image.load(PLATFORM_BROWN_5), pg.image.load(PLATFORM_BROWN_6)]
+        self.images[0].set_colorkey(BLACK)
+        self.number = randrange(0, 100)
+        if self.number < 50 or self.game.score < 60:
             self.type = 'green'
-            self.image = images[0]
-        elif 50<self.number<75:
+            self.image = self.images[0]
+        elif 50 < self.number < 85:
             self.type = 'blue'
-            self.image = images[1]
+            self.image = self.images[1]
         else:
             self.type = 'brown'
-            self.image = images[2]
+            self.image = self.brown[0]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.vx = randrange(1,4)
+        self.current_frame = 0
+        self.vx = randrange(1, 4)
         self.number = randrange(0, 100, 2)
 
-        if randrange(100) < SPRING_POSSIBILITY:
+        if self.type == 'green' and randrange(100) < SPRING_POSSIBILITY:
             Spring(self.game, self)
 
     def update(self, *args):
+        now = pg.time.get_ticks()
         if self.type == 'blue':
             self.rect.x += self.vx
             if self.rect.x > WIDTH - 50 or self.rect.x < 0:
                 self.vx *= -1
+        # if self.type == 'brown':
+        # if ()
+        # self.animate(now)
 
+    def animate(self, now):
+        if now - self.moment > 350:
+            self.moment = now
+            self.current_frame = (self.current_frame + 1)
+            bottom = self.rect.bottom
+            self.image = self.brown[self.current_frame]
+            self.rect = self.image.get_rect()
+            self.rect.bottom = bottom
+            if self.current_frame == 6:
+                self.kill()
 
 
 class Background(pg.sprite.Sprite):
@@ -197,3 +214,33 @@ class Bullet(pg.sprite.Sprite):
         self.rect.y += self.vy
         if self.rect.bottom < 0:
             self.kill()
+
+class Button:
+
+    def __init__(self, screen, x, y, text, color, width=70, height=40):
+
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
+        self.color = color
+        self.rect = pg.Rect(x, y, width, height)
+        self.show()
+
+    def show(self):
+
+        self.draw_button()
+        self.write_text()
+
+    def write_text(self):
+        font = pg.font.Font(pg.font.match_font(FONT_NAME), 24)
+        label = font.render(self.text, 1, self.color)
+        self.screen.blit(label, ((self.x + self.width / 2) - label.get_width() / 2,
+                                 (self.y + self.height / 2) - label.get_height() / 2))
+
+    def draw_button(self):
+
+        pg.draw.rect(self.screen, self.color, self.rect, 0)
+        pg.draw.rect(self.screen, self.color, self.rect, 1)

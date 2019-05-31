@@ -14,6 +14,10 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
+        # start menu
+        self.start_sprite = pg.sprite.Group()
+        self.start = Background(START)
+        self.start_sprite.add(self.start)
         self.load_data()
 
     def new(self):
@@ -21,24 +25,27 @@ class Game:
         self.score = 0
         self.timer = 0
         self.bullet_timer = 0
+        self.platform_timer = 0
+
+        self.start_buttons = pg.sprite.Group()
         self.all_sprites = pg.sprite.Group()
         self.bullets = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+
         self.background_sprite = pg.sprite.Group()
         self.gameover_sprite = pg.sprite.Group()
         self.springs = pg.sprite.Group()
         self.monsters = pg.sprite.Group()
 
         self.player = Player(self)
-        # self.topbar = Background(TOPBAR)
         self.background = Background(BACKGROUND)
+
         self.gameover = Background(GAMEOVER)
         self.all_sprites.add(self.player)
         self.background_sprite.add(self.background)
-        # self.background_sprite.add(self.topbar)
         self.gameover_sprite.add(self.gameover)
+        self.start_sprite.add(self.start)
         self.all_sprites.add(self.background)
-        # self.all_sprites.add(self.topbar)
 
         for plat in PLATFORM_LIST:
             p = Platform(self, *plat)
@@ -69,9 +76,14 @@ class Game:
                     if hit.rect.bottom > lowest.rect.bottom:
                         lowest = hit
                 if self.player.pos.y > lowest.rect.centery:
-                    self.player.pos.y = lowest.rect.top
-                    self.player.vel.y = 0
-                    self.player.jump()
+                    if lowest.type == 'brown':
+                        # lowest.animate(self.now)
+                        lowest.kill()
+                        i = 1
+                    else:
+                        self.player.pos.y = lowest.rect.top
+                        self.player.vel.y = 0
+                        self.player.jump()
         # If player reaches top 1/4
         if self.player.rect.top <= HEIGHT / 4:
             self.player.pos.y += max(abs(self.player.vel.y), 4)
@@ -114,7 +126,7 @@ class Game:
                 spring.animate()
                 self.player.vel.y = - BOOST
 
-    #     Monster collide with bullet
+        #     Monster collide with bullet
         bullet_hits = pg.sprite.groupcollide(self.bullets, self.monsters, True, True)
         for hit in bullet_hits:
             hit.kill()
@@ -131,8 +143,6 @@ class Game:
                 self.running = False
 
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_SPACE:
-                    self.player.jump()
                 if event.key == pg.K_UP:
                     if self.now - self.bullet_timer > 500:
                         self.bullet_timer = self.now
@@ -150,10 +160,13 @@ class Game:
 
     def show_start_screen(self):
         # game splash/start screen
-        self.screen.fill(BGCOLOR)
-        self.draw_text(TITLE, 48, WHITE, WIDTH / 2, HEIGHT / 4)
-        self.draw_text("Use left and right keys to move", 36, WHITE, WIDTH / 2, HEIGHT / 2)
-        self.draw_text("Highscore: " + str(self.highscore), 22, WHITE, WIDTH / 2, HEIGHT / 1.5)
+        self.start_button = Button(self.screen, 72, 150, "esjketit", (255, 255, 255), 150, 70)
+        self.start_sprite.draw(self.screen)
+        # self.draw_text(TITLE, 48, WHITE, WIDTH / 2, HEIGHT / 4)
+        self.draw_text("Use left and right keys to move", 36, BLACK, WIDTH / 2, HEIGHT * 2.5 / 4 + 30)
+        self.draw_text("and up key to shoot", 36, BLACK, WIDTH / 2 + 20, HEIGHT *2/3 + 50)
+        self.draw_text("Press SPACE to start", 36, BLACK, WIDTH / 2, HEIGHT /2.5)
+        self.draw_text("Highscore: " + str(self.highscore), 22,RED, WIDTH *3/4+ 10, HEIGHT /4 + 20)
         pg.display.flip()
         self.wait_for_key()
 
@@ -185,8 +198,12 @@ class Game:
                 if event.type == pg.QUIT:
                     waiting = False
                     self.running = False
-                if event.type == pg.KEYUP:
-                    waiting = False
+                if event.type == pg.MOUSEBUTTONDOWN:
+                    if self.start_button.rect.collidepoint(pg.mouse.get_pos()):
+                        waiting = False
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_SPACE:
+                        waiting = False
 
     def draw_text(self, text, font_size, color, x, y):
         font = pg.font.Font(self.font_name, font_size)
@@ -205,6 +222,9 @@ class Game:
             self.highscore = int(score_str)
         except:
             self.highscore = 0
+
+
+
 
 
 g = Game()
