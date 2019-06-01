@@ -67,5 +67,6 @@ BULLET = "resources/bullet.png"
 JUMPSOUND = "resources/jump19.wav"
 SPRINGSOUND = "resources/SpringSound.wav"
 MOBSOUND = "resources/mobSound.wav"
+BROWNSOUND = "resources/Brown.wav"
 
 

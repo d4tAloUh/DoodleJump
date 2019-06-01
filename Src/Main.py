@@ -128,6 +128,7 @@ class Game:
                     if self.players[1].pos.y > lowest2.rect.centery:
                         if lowest2.type == 'brown':
                             # lowest.animate(self.now)
+                            self.brownsound.play()
                             lowest2.set_brown(True)
                         else:
                             self.players[1].pos.y = lowest2.rect.top
@@ -199,7 +200,7 @@ class Game:
                         self.playing_2 = False
         # Hit monster
         if self.playing:
-            mob_hits = pg.sprite.spritecollide(self.players[0], self.monsters, False, pg.sprite.collide_mask)
+            mob_hits = pg.sprite.spritecollide(self.players[0], self.monsters, True, pg.sprite.collide_mask)
             if mob_hits:
                 self.mobsound.play()
                 # self.mobsound.fadeout(400)
@@ -355,7 +356,7 @@ class Game:
         self.draw_text("Press space to play again", 36, BLACK, WIDTH / 2, HEIGHT * 2 / 3)
         if self.score[0] > self.highscore:
             self.highscore = self.score[0]
-            self.draw_text("You have a new highscore!", 36, BLACK, WIDTH / 2 + 30, HEIGHT / 2 - 40)
+            self.draw_text("You have a new highscore!", 36, BLACK, WIDTH / 2 + 30, HEIGHT / 2 - 50)
             file = open(HIGHSCORE, 'w')
             file.write(str(self.highscore))
             file.close()
@@ -403,8 +404,10 @@ class Game:
 
         self.jumpsound = pg.mixer.Sound(JUMPSOUND)
         self.springsound = pg.mixer.Sound(SPRINGSOUND)
+        self.brownsound = pg.mixer.Sound(BROWNSOUND)
         self.mobsound = pg.mixer.Sound(MOBSOUND)
         self.jumpsound.set_volume(0.2)
+        self.brownsound.set_volume(1)
         # self.mobsound.set_volume(0.2)
         self.springsound.set_volume(0.2)
 
