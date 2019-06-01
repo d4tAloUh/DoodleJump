@@ -1,5 +1,5 @@
 import random
-
+import Src.Settings
 from Src.Sprites import *
 
 
@@ -408,11 +408,16 @@ class Game:
         # self.mobsound.set_volume(0.2)
         self.springsound.set_volume(0.2)
 
+class game:
+    def __init__(self):
+        g = Game()
+        g.show_start_screen()
+        while g.running:
+            g.new()
+            g.show_go_screen()
 
-g = Game()
-g.show_start_screen()
-while g.running:
-    g.new()
-    g.show_go_screen()
+        pg.quit()
 
-pg.quit()
+
+if __name__ == '__main__':
+    game = game()

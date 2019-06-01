@@ -1,6 +1,7 @@
 from random import choice, randrange
 
 import pygame as pg
+import Src.Settings
 from Src.Settings import *
 
 vec = pg.math.Vector2
