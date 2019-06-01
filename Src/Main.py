@@ -230,12 +230,14 @@ class Game:
             for spring in spring_hits:
                 if spring.type == 'spring':
                     spring.animate()
+                    self.springsound.play()
                     self.players[0].vel.y = - BOOST
         if self.multiplayer and self.playing_2:
             spring_hits2 = pg.sprite.spritecollide(self.players[1], self.springs_2, False)
             for spring1 in spring_hits2:
                 if spring1.type == 'spring':
                     spring1.animate()
+                    self.springsound.play()
                     self.players[1].vel.y = - BOOST
 
         #     Monster collide with bullet
@@ -393,6 +395,7 @@ class Game:
         self.jumpsound = pg.mixer.Sound(JUMPSOUND)
         self.springsound = pg.mixer.Sound(SPRINGSOUND)
         self.jumpsound.set_volume(0.2)
+        self.springsound.set_volume(0.2)
 
 
 g = Game()
