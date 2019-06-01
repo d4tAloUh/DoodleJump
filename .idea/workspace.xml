@@ -4,7 +4,6 @@
     <list default="true" id="37682f90-f711-482e-9a7c-9d1216acdd9d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/Src/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Src/Main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Src/Settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Src/Settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Src/Sprites.py" beforeDir="false" afterPath="$PROJECT_DIR$/Src/Sprites.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,8 +30,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Src/Settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="566">
-              <caret line="66" column="36" selection-start-line="66" selection-start-column="36" selection-end-line="66" selection-end-column="36" />
+            <state relative-caret-position="585">
+              <caret line="67" column="29" selection-start-line="67" selection-start-column="29" selection-end-line="67" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -40,8 +39,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Src/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="316">
-              <caret line="395" column="35" selection-start-line="395" selection-start-column="35" selection-end-line="395" selection-end-column="35" />
+            <state relative-caret-position="461">
+              <caret line="390" column="19" lean-forward="true" selection-start-line="390" selection-start-column="19" selection-end-line="390" selection-end-column="19" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -111,8 +110,8 @@
       <find>self.timer</find>
       <find>all_s</find>
       <find>self.multipl</find>
-      <find>self.monster</find>
       <find>game.all_sprites</find>
+      <find>self.monster</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -126,8 +125,8 @@
         <option value="$PROJECT_DIR$/Src/MainMenu" />
         <option value="$PROJECT_DIR$/Src/test.py" />
         <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/Src/Settings.py" />
         <option value="$PROJECT_DIR$/Src/Sprites.py" />
+        <option value="$PROJECT_DIR$/Src/Settings.py" />
         <option value="$PROJECT_DIR$/Src/Main.py" />
       </list>
     </option>
@@ -323,23 +322,23 @@
       <updated>1559034678139</updated>
       <workItem from="1559034681000" duration="14519000" />
       <workItem from="1559122287845" duration="25905000" />
-      <workItem from="1559295803631" duration="35944000" />
+      <workItem from="1559295803631" duration="36199000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="76368000" />
+    <option name="totallyTimeSpent" value="76623000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20628998" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20628998" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.1375948" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.22210184" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.22210184" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -420,20 +419,10 @@
     <entry file="file://$PROJECT_DIR$/resources/monster.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/Src/highscore.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/Lib/site-packages/pygame/sprite.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="205">
           <caret line="378" selection-start-line="378" selection-end-line="378" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Src/Settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="566">
-          <caret line="66" column="36" selection-start-line="66" selection-start-column="36" selection-end-line="66" selection-end-column="36" />
         </state>
       </provider>
     </entry>
@@ -444,10 +433,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Src/Settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="67" column="29" selection-start-line="67" selection-start-column="29" selection-end-line="67" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Src/highscore.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/Src/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="395" column="35" selection-start-line="395" selection-start-column="35" selection-end-line="395" selection-end-column="35" />
+        <state relative-caret-position="461">
+          <caret line="390" column="19" lean-forward="true" selection-start-line="390" selection-start-column="19" selection-end-line="390" selection-end-column="19" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>

@@ -22,10 +22,10 @@ class Game:
             self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         else:
             self.screen = pg.display.set_mode((WIDTH * 2 + 20, HEIGHT))
-        self.score = [0,0]
+        self.score = [0, 0]
         self.players = [Player(self, WIDTH / 2, HEIGHT - 40, WIDTH, 0),
-                        Player(self, WIDTH * 3/2, HEIGHT - 40, WIDTH*2 + 20, WIDTH + 20, True)]
-        self.difficulty_counter = [1,1]
+                        Player(self, WIDTH * 3 / 2, HEIGHT - 40, WIDTH * 2 + 20, WIDTH + 20, True)]
+        self.difficulty_counter = [1, 1]
         self.monster_possibility = MONSTER_POSSIBILITY
         self.timer = 0
         self.bullet_timer = 0
@@ -74,7 +74,7 @@ class Game:
         # Draw platforms for 2st player
         if self.multiplayer:
             for plat in PLATFORM_LIST_2:
-                p = Platform(self, *plat,WIDTH +20, 2*WIDTH + 20, False)
+                p = Platform(self, *plat, WIDTH + 20, 2 * WIDTH + 20, False)
                 self.all_sprites_2.add(p)
                 self.platforms_2.add(p)
 
@@ -161,9 +161,7 @@ class Game:
             if self.playing:
                 Enemy(self, WIDTH, 0)
             if self.multiplayer and self.playing_2:
-                Enemy(self, WIDTH*2 + 20, WIDTH + 20, True)
-
-
+                Enemy(self, WIDTH * 2 + 20, WIDTH + 20, True)
 
         # Create new platforms
         if self.playing:
@@ -177,7 +175,7 @@ class Game:
             while len(self.platforms_2) < PLATFORM_AMOUNT:
                 width = random.randrange(75, 100)
                 s = Platform(self, random.randrange(WIDTH, 2 * WIDTH - width),
-                             random.randrange(-150, -30), WIDTH+ 20, 2*WIDTH + 20, False)
+                             random.randrange(-150, -30), WIDTH + 20, 2 * WIDTH + 20, False)
                 self.platforms_2.add(s)
                 self.all_sprites_2.add(s)
 
@@ -197,7 +195,7 @@ class Game:
                     sprite.rect.y -= max(self.players[1].vel.y, 5)
                     if sprite.rect.bottom < 0:
                         sprite.kill()
-                    if len(self.platforms_2)  == 0:
+                    if len(self.platforms_2) == 0:
                         self.playing_2 = False
         # Hit monster
         if self.playing:
@@ -254,13 +252,13 @@ class Game:
 
     def show_pause_screen(self):
         if self.multiplayer:
-            self.screen = pg.display.set_mode((2*WIDTH + 20, HEIGHT))
+            self.screen = pg.display.set_mode((2 * WIDTH + 20, HEIGHT))
         else:
-            self.screen = pg.display.set_mode((WIDTH , HEIGHT))
+            self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         self.background_sprite.draw(self.screen)
         if self.multiplayer:
-            self.draw_text("PAUSED", 36, BLACK, WIDTH / 2, HEIGHT /3 + 30)
-            self.draw_text("PAUSED", 36, BLACK, 3 * WIDTH / 2, HEIGHT /3 + 30)
+            self.draw_text("PAUSED", 36, BLACK, WIDTH / 2, HEIGHT / 3 + 30)
+            self.draw_text("PAUSED", 36, BLACK, 3 * WIDTH / 2, HEIGHT / 3 + 30)
         else:
             self.draw_text("PAUSED", 36, BLACK, WIDTH / 2, HEIGHT / 3 + 30)
         pg.display.flip()
@@ -299,13 +297,13 @@ class Game:
         # Game Loop - draw
         # self.screen.fill(BGCOLOR)
         self.background_sprite.draw(self.screen)
-        pg.draw.rect(self.screen,BLACK,[WIDTH,0,20,HEIGHT])
+        pg.draw.rect(self.screen, BLACK, [WIDTH, 0, 20, HEIGHT])
         self.all_sprites_1.draw(self.screen)
         self.all_sprites_2.draw(self.screen)
         self.screen.blit(self.players[0].image, self.players[0].rect)
         # Draw score
         self.draw_text(str(self.score[0]), 22, BLACK, WIDTH / 2, 20)
-        self.draw_text(str(self.score[1]), 22, BLACK, WIDTH * 3/ 2, 20)
+        self.draw_text(str(self.score[1]), 22, BLACK, WIDTH * 3 / 2, 20)
         # *after* drawing everything, flip the display
         pg.display.flip()
 
@@ -343,10 +341,10 @@ class Game:
                 self.draw_text("DRAW!", 48, BROWN, WIDTH * 2.60 / 4, HEIGHT / 2.5)
 
         self.draw_text("" + str(self.last_score), 42, BROWN, WIDTH * 4 / 5 + 25, HEIGHT / 2 - 15)
-        self.draw_text("Press space to play again", 36, BLACK, WIDTH / 2 , HEIGHT * 2 / 3)
+        self.draw_text("Press space to play again", 36, BLACK, WIDTH / 2, HEIGHT * 2 / 3)
         if self.score[0] > self.highscore:
             self.highscore = self.score[0]
-            self.draw_text("You have a new highscore!", 36, BLACK, WIDTH / 2 + 30, HEIGHT / 2 -40)
+            self.draw_text("You have a new highscore!", 36, BLACK, WIDTH / 2 + 30, HEIGHT / 2 - 40)
             file = open(HIGHSCORE, 'w')
             file.write(str(self.highscore))
             file.close()
@@ -383,19 +381,18 @@ class Game:
 
     def load_data(self):
         #         load all data
-        file = open(HIGHSCORE, 'r')
-        score_str = file.read()
-        file.close()
-
         try:
+            file = open(HIGHSCORE, 'r')
+            score_str = file.read()
+            file.close()
+
             self.highscore = int(score_str)
         except:
             self.highscore = 0
 
         self.jumpsound = pg.mixer.Sound(JUMPSOUND)
+        self.springsound = pg.mixer.Sound(SPRINGSOUND)
         self.jumpsound.set_volume(0.2)
-
-
 
 
 g = Game()
