@@ -167,7 +167,7 @@ class Game:
         if self.playing:
             while len(self.platforms_1) < self.platfor_amount:
                 width = random.randrange(75, 100)
-                p = Platform(self, random.randrange(0, WIDTH - width), random.randrange(-150, -30), 0, WIDTH, False)
+                p = Platform(self, random.randrange(0, WIDTH - width), random.randrange(-300, -30), 0, WIDTH, False)
                 self.platforms_1.add(p)
                 self.all_sprites_1.add(p)
 
@@ -175,7 +175,7 @@ class Game:
             while len(self.platforms_2) < PLATFORM_AMOUNT:
                 width = random.randrange(75, 100)
                 s = Platform(self, random.randrange(WIDTH, 2 * WIDTH - width),
-                             random.randrange(-150, -30), WIDTH + 20, 2 * WIDTH + 20, False)
+                             random.randrange(-300, -30), WIDTH + 20, 2 * WIDTH + 20, False)
                 self.platforms_2.add(s)
                 self.all_sprites_2.add(s)
 
@@ -201,12 +201,16 @@ class Game:
         if self.playing:
             mob_hits = pg.sprite.spritecollide(self.players[0], self.monsters, False, pg.sprite.collide_mask)
             if mob_hits:
+                self.mobsound.play()
+                # self.mobsound.fadeout(400)
                 self.all_sprites_1.empty()
                 self.playing = False
 
         if self.multiplayer and self.playing_2:
             mob_hits1 = pg.sprite.spritecollide(self.players[1], self.monsters_2, False, pg.sprite.collide_mask)
             if mob_hits1:
+                self.mobsound.play()
+                # self.mobsound.fadeout(400)
                 self.all_sprites_2.empty()
                 self.playing_2 = False
 
@@ -245,11 +249,15 @@ class Game:
             bullet_hits = pg.sprite.groupcollide(self.bullets, self.monsters, True, True)
             for hit in bullet_hits:
                 hit.kill()
+                self.mobsound.play()
+                # self.mobsound.fadeout(400)
                 self.score[0] += 50
         if self.playing_2 and self.multiplayer:
             bullet_hits1 = pg.sprite.groupcollide(self.bullets_2, self.monsters, True, True)
             for hit1 in bullet_hits1:
                 hit1.kill()
+                self.mobsound.play()
+                # self.mobsound.fadeout(400)
                 self.score[1] += 50
 
     def show_pause_screen(self):
@@ -279,15 +287,16 @@ class Game:
 
             if event.type == pg.KEYDOWN:
                 if self.playing:
-                    if event.key == pg.K_UP:
+                    if event.key == pg.K_w:
+
                         if self.now - self.bullet_timer > 500:
                             self.bullet_timer = self.now
-                            Bullet(self, self.players[1])
+                            Bullet(self, self.players[0])
                 if self.playing_2 and self.multiplayer:
-                    if event.key == pg.K_w:
+                    if event.key == pg.K_UP:
                         if self.now - self.bullet_timer_2 > 500:
                             self.bullet_timer_2 = self.now
-                            Bullet(self, self.players[0])
+                            Bullet(self, self.players[1])
                 if event.key == pg.K_SPACE:
                     if not self.paused_1:
                         self.paused_1 = True
@@ -319,10 +328,10 @@ class Game:
         self.multiplayer_button = Button(self.screen, 133, 230, "esjketit", (255, 255, 255), 150, 70)
         self.start_sprite.draw(self.screen)
         # self.draw_text(TITLE, 48, WHITE, WIDTH / 2, HEIGHT / 4)
-        self.draw_text("Use left and right keys to move", 36, BLACK, WIDTH / 2, HEIGHT * 2.5 / 4 + 30)
-        self.draw_text("and up key to shoot", 36, BLACK, WIDTH / 2 + 20, HEIGHT * 2 / 3 + 50)
+        # self.draw_text("Use left and right keys to move", 36, BLACK, WIDTH / 2, HEIGHT * 2.5 / 4 + 30)
+        # self.draw_text("and up key to shoot", 36, BLACK, WIDTH / 2 + 20, HEIGHT * 2 / 3 + 50)
         # self.draw_text("Press SPACE to start", 36, BLACK, WIDTH / 2, HEIGHT / 2.5)
-        self.draw_text("Highscore: " + str(self.highscore), 22, BROWN, WIDTH * 3 / 4 + 10, HEIGHT / 4 + 20)
+        self.draw_text("Highscore: " + str(self.highscore), 22, BROWN, WIDTH * 3 / 4 + 15, HEIGHT / 4 + 20)
         pg.display.flip()
         self.wait_for_key()
 
@@ -394,7 +403,9 @@ class Game:
 
         self.jumpsound = pg.mixer.Sound(JUMPSOUND)
         self.springsound = pg.mixer.Sound(SPRINGSOUND)
+        self.mobsound = pg.mixer.Sound(MOBSOUND)
         self.jumpsound.set_volume(0.2)
+        # self.mobsound.set_volume(0.2)
         self.springsound.set_volume(0.2)
 
 

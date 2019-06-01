@@ -7,8 +7,8 @@ FONT_NAME = 'arial'
 HIGHSCORE = "highscore.txt"
 
 # Player properties
-PLAYER_GRAVITY = 0.3
-PLAYER_ACC = 0.40
+PLAYER_GRAVITY = 0.2
+PLAYER_ACC = 0.30
 PLAYER_FRICTION = -0.09
 PlAYER_JUMP = 22.5
 
@@ -66,5 +66,6 @@ BULLET = "../resources/bullet.png"
 # Sounds
 JUMPSOUND = "../resources/jump19.wav"
 SPRINGSOUND = "../resources/SpringSound.wav"
+MOBSOUND = "../resources/mobSound.wav"
 
 
