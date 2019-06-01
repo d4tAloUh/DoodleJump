@@ -63,4 +63,7 @@ MONSTER_UP = "../resources/bat1.png"
 MONSTER_DOWN = "../resources/bat3.png"
 BULLET = "../resources/bullet.png"
 
+# Sounds
+JUMPSOUND = "../resources/jump19.wav"
+
 

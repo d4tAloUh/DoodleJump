@@ -14,9 +14,6 @@ class Game:
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
         # start menu
-        self.start_sprite = pg.sprite.Group()
-        self.start = Background(START)
-        self.start_sprite.add(self.start)
         self.load_data()
 
     def new(self):
@@ -48,6 +45,8 @@ class Game:
         self.springs_2 = pg.sprite.Group()
         self.monsters = pg.sprite.Group()
         self.monsters_2 = pg.sprite.Group()
+
+        self.paused_1 = False
 
         self.background = Background(BACKGROUND)
         self.background_2 = Background(BACKGROUND, True)
@@ -115,23 +114,25 @@ class Game:
                         else:
                             self.players[0].pos.y = lowest.rect.top
                             self.players[0].vel.y = 0
+
                             self.players[0].jump()
         # Check if second player hits platform
         if self.multiplayer and self.playing_2:
-            hits2 = pg.sprite.spritecollide(self.players[1], self.platforms_2, False)
-            if hits2:
-                lowest2 = hits2[0]
-                for hit in hits2:
-                    if hit.rect.bottom > lowest2.rect.bottom:
-                        lowest2 = hit
-                if self.players[1].pos.y > lowest2.rect.centery:
-                    if lowest2.type == 'brown':
-                        # lowest.animate(self.now)
-                        lowest2.set_brown(True)
-                    else:
-                        self.players[1].pos.y = lowest2.rect.top
-                        self.players[1].vel.y = 0
-                        self.players[1].jump()
+            if self.players[1].vel.y > 0:
+                hits2 = pg.sprite.spritecollide(self.players[1], self.platforms_2, False)
+                if hits2:
+                    lowest2 = hits2[0]
+                    for hit in hits2:
+                        if hit.rect.bottom > lowest2.rect.bottom:
+                            lowest2 = hit
+                    if self.players[1].pos.y > lowest2.rect.centery:
+                        if lowest2.type == 'brown':
+                            # lowest.animate(self.now)
+                            lowest2.set_brown(True)
+                        else:
+                            self.players[1].pos.y = lowest2.rect.top
+                            self.players[1].vel.y = 0
+                            self.players[1].jump()
         # If player1 reaches top 1/4
         if self.playing:
             if self.players[0].rect.top <= HEIGHT / 3.5:
@@ -162,16 +163,7 @@ class Game:
             if self.multiplayer and self.playing_2:
                 Enemy(self, WIDTH*2 + 20, WIDTH + 20, True)
 
-        # Hit monster
-        if self.playing:
-            mob_hits = pg.sprite.spritecollide(self.players[0], self.monsters, False, pg.sprite.collide_mask)
-            if mob_hits:
-                self.playing = False
 
-        if self.multiplayer and self.playing_2:
-            mob_hits1 = pg.sprite.spritecollide(self.players[1], self.monsters_2, False, pg.sprite.collide_mask)
-            if mob_hits1:
-                self.playing_2 = False
 
         # Create new platforms
         if self.playing:
@@ -207,7 +199,18 @@ class Game:
                         sprite.kill()
                     if len(self.platforms_2)  == 0:
                         self.playing_2 = False
+        # Hit monster
+        if self.playing:
+            mob_hits = pg.sprite.spritecollide(self.players[0], self.monsters, False, pg.sprite.collide_mask)
+            if mob_hits:
+                self.all_sprites_1.empty()
+                self.playing = False
 
+        if self.multiplayer and self.playing_2:
+            mob_hits1 = pg.sprite.spritecollide(self.players[1], self.monsters_2, False, pg.sprite.collide_mask)
+            if mob_hits1:
+                self.all_sprites_2.empty()
+                self.playing_2 = False
 
         # Increase level difficulty
         if self.score[0] > 1000 and (self.score[0] / 200) / 2 > self.difficulty_counter[0]:
@@ -219,6 +222,9 @@ class Game:
         if 2060 > self.score[0] > 2000:
             # self.all_sprites.add(self.background_skies)
             self.background_sprite.remove(self.background)
+        if 2060 > self.score[1] > 2000:
+            # self.all_sprites.add(self.background_skies)
+            self.background_sprite.remove(self.background_2)
 
         #     Collide with spring
         if self.playing:
@@ -242,9 +248,23 @@ class Game:
                 self.score[0] += 50
         if self.playing_2 and self.multiplayer:
             bullet_hits1 = pg.sprite.groupcollide(self.bullets_2, self.monsters, True, True)
-            for hit in bullet_hits1:
-                hit.kill()
+            for hit1 in bullet_hits1:
+                hit1.kill()
                 self.score[1] += 50
+
+    def show_pause_screen(self):
+        if self.multiplayer:
+            self.screen = pg.display.set_mode((2*WIDTH + 20, HEIGHT))
+        else:
+            self.screen = pg.display.set_mode((WIDTH , HEIGHT))
+        self.background_sprite.draw(self.screen)
+        if self.multiplayer:
+            self.draw_text("PAUSED", 36, BLACK, WIDTH / 2, HEIGHT /3 + 30)
+            self.draw_text("PAUSED", 36, BLACK, 3 * WIDTH / 2, HEIGHT /3 + 30)
+        else:
+            self.draw_text("PAUSED", 36, BLACK, WIDTH / 2, HEIGHT / 3 + 30)
+        pg.display.flip()
+        self.wait_for_key()
 
     def events(self):
 
@@ -262,12 +282,18 @@ class Game:
                     if event.key == pg.K_UP:
                         if self.now - self.bullet_timer > 500:
                             self.bullet_timer = self.now
-                            Bullet(self, self.players[0])
+                            Bullet(self, self.players[1])
                 if self.playing_2 and self.multiplayer:
                     if event.key == pg.K_w:
                         if self.now - self.bullet_timer_2 > 500:
                             self.bullet_timer_2 = self.now
-                            Bullet(self, self.players[1])
+                            Bullet(self, self.players[0])
+                if event.key == pg.K_SPACE:
+                    if not self.paused_1:
+                        self.paused_1 = True
+                        self.show_pause_screen()
+                    else:
+                        self.paused_1 = False
 
     def draw(self):
         # Game Loop - draw
@@ -285,6 +311,10 @@ class Game:
 
     def show_start_screen(self):
         # game splash/start screen
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        self.start_sprite = pg.sprite.Group()
+        self.start = Background(START)
+        self.start_sprite.add(self.start)
         self.start_button = Button(self.screen, 72, 150, "esjketit", (255, 255, 255), 150, 70)
         self.multiplayer_button = Button(self.screen, 133, 230, "esjketit", (255, 255, 255), 150, 70)
         self.start_sprite.draw(self.screen)
@@ -302,9 +332,17 @@ class Game:
             return
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         self.gameover_sprite.draw(self.screen)
+        self.last_score = self.score[0]
+        if self.multiplayer:
+            if self.last_score > self.score[1]:
+                self.draw_text("Player 1 wins!", 48, BROWN, WIDTH * 2.60 / 4, HEIGHT / 2.5)
+            elif self.last_score < self.score[1]:
+                self.draw_text("Player 2 wins!", 48, BROWN, WIDTH * 2.60 / 4, HEIGHT / 2.5)
+                self.last_score = self.score[1]
+            else:
+                self.draw_text("DRAW!", 48, BROWN, WIDTH * 2.60 / 4, HEIGHT / 2.5)
 
-        # self.draw_text("GAME OVER", 48, BLACK, WIDTH / 2, HEIGHT / 4)
-        self.draw_text("" + str(self.score[0]), 42, BROWN, WIDTH * 4 / 5 + 25, HEIGHT / 2 - 15)
+        self.draw_text("" + str(self.last_score), 42, BROWN, WIDTH * 4 / 5 + 25, HEIGHT / 2 - 15)
         self.draw_text("Press space to play again", 36, BLACK, WIDTH / 2 , HEIGHT * 2 / 3)
         if self.score[0] > self.highscore:
             self.highscore = self.score[0]
@@ -316,6 +354,7 @@ class Game:
             self.draw_text("Highscore: " + str(self.highscore), 22, RED, WIDTH * 4 / 5 + 18, HEIGHT / 3 - 35)
         pg.display.flip()
         self.wait_for_key()
+        # self.show_start_screen()
 
     def wait_for_key(self):
         waiting = True
@@ -352,6 +391,9 @@ class Game:
             self.highscore = int(score_str)
         except:
             self.highscore = 0
+
+        self.jumpsound = pg.mixer.Sound(JUMPSOUND)
+        self.jumpsound.set_volume(0.2)
 
 
 

@@ -31,7 +31,7 @@ class Player(pg.sprite.Sprite):
         now = pg.time.get_ticks()
         keys = pg.key.get_pressed()
         bottom = self.rect.bottom
-        if not self.second:
+        if self.second:
             if keys[pg.K_LEFT]:
                 self.acc.x = -PLAYER_ACC
                 self.image = self.side_frames[1]
@@ -84,6 +84,7 @@ class Player(pg.sprite.Sprite):
             self.vel.y -= PlAYER_JUMP
         elif not self.second and hits:
             self.vel.y -= PlAYER_JUMP
+        self.game.jumpsound.play()
 
 
 class Platform(pg.sprite.Sprite):
@@ -210,7 +211,7 @@ class Enemy(pg.sprite.Sprite):
         self.x2 = x2
         self.second = second
         if self.second:
-            self.groups = game.monsters, game.all_sprites_2
+            self.groups = game.monsters_2, game.all_sprites_2
         else:
             self.groups = game.monsters, game.all_sprites_1
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -220,9 +221,9 @@ class Enemy(pg.sprite.Sprite):
                        pg.transform.scale(pg.image.load(MONSTER_DOWN), (83, 47))]
         self.image = self.images[0]
         self.rect = self.image.get_rect()
-        self.rect.centerx = choice([self.x2, self.x1 - 20])
+        self.rect.centerx = choice([self.x2, self.x1 - 40])
         self.vx = randrange(3, 6)
-        if self.rect.centerx > self.x1 - 21:
+        if self.rect.centerx > self.x1 - 41:
             self.vx *= -1
         self.rect.y = randrange(HEIGHT / 2)
         self.vy = 0
@@ -242,7 +243,7 @@ class Enemy(pg.sprite.Sprite):
         self.rect.center = center
         self.mask = pg.mask.from_surface(self.image)
         self.rect.y += self.vy
-        if self.rect.left > self.x1 + 10 or self.rect.right < self.x2:
+        if self.rect.left > self.x1 - 30 or self.rect.centerx < self.x2:
             self.kill()
 
 
@@ -290,7 +291,7 @@ class Button:
 
     def write_text(self):
         font = pg.font.Font(pg.font.match_font(FONT_NAME), 24)
-        label = font.render(self.text, 1, self.color)
+        label = font.render(self.text, 1, BROWN)
         self.screen.blit(label, ((self.x + self.width / 2) - label.get_width() / 2,
                                  (self.y + self.height / 2) - label.get_height() / 2))
 
