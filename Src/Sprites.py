@@ -76,7 +76,7 @@ class Platform(pg.sprite.Sprite):
                       pg.image.load(PLATFORM_BROWN_5), pg.image.load(PLATFORM_BROWN_6)]
         self.images[0].set_colorkey(BLACK)
         self.number = randrange(0, 100)
-        if self.number < 50 or self.game.score < 60:
+        if self.number < 50 or self.game.score[0] < 60:
             self.type = 'green'
             self.image = self.images[0]
         elif 50 < self.number < 85:
@@ -123,12 +123,15 @@ class Platform(pg.sprite.Sprite):
 
 
 class Background(pg.sprite.Sprite):
-    def __init__(self, image):
+    def __init__(self, image, secondPlayer = False):
         self._layer = 3
         pg.sprite.Sprite.__init__(self)
         self.image = pg.image.load(image).convert()
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = 0, 0
+        if not secondPlayer:
+            self.rect.x, self.rect.y = 0, 0
+        else:
+            self.rect.x, self.rect.y = WIDTH, 0
 
 
 class Spring(pg.sprite.Sprite):

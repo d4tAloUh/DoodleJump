@@ -1,6 +1,6 @@
 # game options/settings
 TITLE = "Noodle Doodle"
-WIDTH = 480
+WIDTH = 440
 HEIGHT = 600
 FPS = 60
 FONT_NAME = 'arial'
@@ -38,8 +38,8 @@ LIGHTBLUE = (0, 155, 155)
 BGCOLOR = LIGHTBLUE
 
 # Images
-BACKGROUND = "../resources/background.png"
-BACKGROUND_SKIES = "../resources/background_skies.png"
+BACKGROUND = "../resources/background_normal.png"
+BACKGROUND_SKIES = "../resources/background_skies_normal.png"
 START = "../resources/intro0.png"
 DOODLE_LEFT = "../resources/Doodle_left.png"
 DOODLE_UP = "../resources/Doodle_upward.png"
