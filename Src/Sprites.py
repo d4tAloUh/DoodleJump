@@ -118,7 +118,10 @@ class Platform(pg.sprite.Sprite):
         self.number = randrange(0, 100, 2)
 
         if self.type == 'green' and randrange(100) < SPRING_POSSIBILITY:
-            Spring(self.game, self)
+            if self.width > WIDTH:
+               Spring(self.game, self, True)
+            else:
+                Spring(self.game, self, False)
 
     def set_brown(self, brown):
         self.collision = brown
@@ -160,13 +163,14 @@ class Background(pg.sprite.Sprite):
 
 
 class Spring(pg.sprite.Sprite):
-    def __init__(self, game, platform):
+    def __init__(self, game, platform, second):
         self._layer = 2
+        self.second = second
         self.game = game
-        if not self.game.multiplayer:
-            self.groups = game.all_sprites, game.springs
+        if not self.second:
+            self.groups = game.all_sprites_1, game.springs
         else:
-            self.groups = game.all_sprites, game.springs_2
+            self.groups = game.all_sprites_2, game.springs_2
         pg.sprite.Sprite.__init__(self, self.groups)
         self.last_update = 0
         self.plat = platform
@@ -179,11 +183,12 @@ class Spring(pg.sprite.Sprite):
 
     def update(self):
         self.rect.bottom = self.plat.rect.top + 2
-        if self.game.multiplayer:
+        if self.second:
             if not self.game.platforms_2.has(self.plat):
                 self.kill()
-        if not self.game.platforms_1.has(self.plat):
-            self.kill()
+        else:
+            if not self.game.platforms_1.has(self.plat):
+                self.kill()
 
     def animate(self):
         now = pg.time.get_ticks()
@@ -205,9 +210,9 @@ class Enemy(pg.sprite.Sprite):
         self.x2 = x2
         self.second = second
         if self.second:
-            self.groups = game.monsters, game.all_sprites
+            self.groups = game.monsters, game.all_sprites_2
         else:
-            self.groups = game.monsters_2, game.all_sprites
+            self.groups = game.monsters, game.all_sprites_1
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
 
@@ -215,9 +220,9 @@ class Enemy(pg.sprite.Sprite):
                        pg.transform.scale(pg.image.load(MONSTER_DOWN), (83, 47))]
         self.image = self.images[0]
         self.rect = self.image.get_rect()
-        self.rect.centerx = choice([self.x2, self.x1 - 10])
+        self.rect.centerx = choice([self.x2, self.x1 - 20])
         self.vx = randrange(3, 6)
-        if self.rect.centerx > self.x1 - 30:
+        if self.rect.centerx > self.x1 - 21:
             self.vx *= -1
         self.rect.y = randrange(HEIGHT / 2)
         self.vy = 0
@@ -244,8 +249,10 @@ class Enemy(pg.sprite.Sprite):
 class Bullet(pg.sprite.Sprite):
     def __init__(self, game, player):
         self._layer = 1
-        self.groups = game.bullets, game.all_sprites
-
+        if player.second:
+            self.groups = game.bullets_2, game.all_sprites_2
+        else:
+            self.groups = game.bullets, game.all_sprites_1
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.image.load(BULLET)

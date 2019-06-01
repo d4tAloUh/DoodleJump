@@ -32,11 +32,13 @@ class Game:
         self.monster_possibility = MONSTER_POSSIBILITY
         self.timer = 0
         self.bullet_timer = 0
-        self.platform_timer = 0
+        self.bullet_timer_2 = 0
 
         self.start_buttons = pg.sprite.Group()
-        self.all_sprites = pg.sprite.Group()
+        self.all_sprites_1 = pg.sprite.Group()
+        self.all_sprites_2 = pg.sprite.Group()
         self.bullets = pg.sprite.Group()
+        self.bullets_2 = pg.sprite.Group()
         self.platforms_1 = pg.sprite.Group()
         self.platforms_2 = pg.sprite.Group()
 
@@ -55,9 +57,9 @@ class Game:
         self.platfor_amount = PLATFORM_AMOUNT
 
         self.gameover = Background(GAMEOVER)
-        self.all_sprites.add(self.players[0])
+        self.all_sprites_1.add(self.players[0])
         if self.multiplayer:
-            self.all_sprites.add(self.players[1])
+            self.all_sprites_2.add(self.players[1])
             self.background_sprite.add(self.background_skies_2)
             self.background_sprite.add(self.background_2)
         self.background_sprite.add(self.background_skies)
@@ -68,13 +70,13 @@ class Game:
         # Draw platforms for 1st player
         for plat in PLATFORM_LIST_1:
             p = Platform(self, *plat, 0, WIDTH, False)
-            self.all_sprites.add(p)
+            self.all_sprites_1.add(p)
             self.platforms_1.add(p)
         # Draw platforms for 2st player
         if self.multiplayer:
             for plat in PLATFORM_LIST_2:
                 p = Platform(self, *plat,WIDTH +20, 2*WIDTH + 20, False)
-                self.all_sprites.add(p)
+                self.all_sprites_2.add(p)
                 self.platforms_2.add(p)
 
         self.run()
@@ -93,7 +95,8 @@ class Game:
 
     def update(self):
         # Game Loop - Update
-        self.all_sprites.update()
+        self.all_sprites_1.update()
+        self.all_sprites_2.update()
         self.now = pg.time.get_ticks()
 
         # check if player hits platform
@@ -131,10 +134,10 @@ class Game:
                         self.players[1].jump()
         # If player1 reaches top 1/4
         if self.playing:
-            if self.players[0].rect.top <= HEIGHT / 4:
+            if self.players[0].rect.top <= HEIGHT / 3.5:
                 self.players[0].pos.y += max(abs(self.players[0].vel.y), 4)
                 for monster in self.monsters:
-                    monster.rect.y += max(abs(self.players[0].vel.y), 4)
+                    monster.rect.y += max(abs(self.players[0].vel.y), 5)
                 for plat in self.platforms_1:
                     plat.rect.y += max(abs(self.players[0].vel.y), 4)
                     if plat.rect.top >= HEIGHT:
@@ -144,8 +147,8 @@ class Game:
         if self.multiplayer and self.playing_2:
             if self.players[1].rect.top <= HEIGHT / 4:
                 self.players[1].pos.y += max(abs(self.players[1].vel.y), 4)
-                for monster in self.monsters_2:
-                    monster.rect.y += max(abs(self.players[1].vel.y), 4)
+                for monster1 in self.monsters_2:
+                    monster1.rect.y += max(abs(self.players[1].vel.y), 5)
                 for plat2 in self.platforms_2:
                     plat2.rect.y += max(abs(self.players[1].vel.y), 4)
                     if plat2.rect.top >= HEIGHT:
@@ -154,14 +157,16 @@ class Game:
         # Spawn monster
         if self.now - self.timer > self.monster_possibility + random.choice([-1000, 1000, 500, 0, -500]):
             self.timer = self.now
-            Enemy(self, WIDTH, 0)
+            if self.playing:
+                Enemy(self, WIDTH, 0)
             if self.multiplayer and self.playing_2:
                 Enemy(self, WIDTH*2 + 20, WIDTH + 20, True)
 
         # Hit monster
-        mob_hits = pg.sprite.spritecollide(self.players[0], self.monsters, False, pg.sprite.collide_mask)
-        if mob_hits:
-            self.playing = False
+        if self.playing:
+            mob_hits = pg.sprite.spritecollide(self.players[0], self.monsters, False, pg.sprite.collide_mask)
+            if mob_hits:
+                self.playing = False
 
         if self.multiplayer and self.playing_2:
             mob_hits1 = pg.sprite.spritecollide(self.players[1], self.monsters_2, False, pg.sprite.collide_mask)
@@ -174,7 +179,7 @@ class Game:
                 width = random.randrange(75, 100)
                 p = Platform(self, random.randrange(0, WIDTH - width), random.randrange(-150, -30), 0, WIDTH, False)
                 self.platforms_1.add(p)
-                self.all_sprites.add(p)
+                self.all_sprites_1.add(p)
 
         if self.multiplayer and self.playing_2:
             while len(self.platforms_2) < PLATFORM_AMOUNT:
@@ -182,26 +187,26 @@ class Game:
                 s = Platform(self, random.randrange(WIDTH, 2 * WIDTH - width),
                              random.randrange(-150, -30), WIDTH+ 20, 2*WIDTH + 20, False)
                 self.platforms_2.add(s)
-                self.all_sprites.add(s)
+                self.all_sprites_2.add(s)
 
         #   Death
         if self.playing:
             if self.players[0].rect.bottom > HEIGHT:
-                self.playing = False
-                self.all_sprites.remove(self.players[0])
-                for sprit in self.platforms_1:
-                    sprit.rect.y -= 10
+                for sprit in self.all_sprites_1:
+                    sprit.rect.y -= max(self.players[0].vel.y, 5)
                     if sprit.rect.bottom < 0:
                         sprit.kill()
+                    if len(self.platforms_1) == 0:
+                        self.playing = False
 
         if self.multiplayer and self.playing_2:
             if self.players[1].rect.bottom > HEIGHT:
-                self.playing_2 = False
-                self.all_sprites.remove(self.players[1])
-                for sprite in self.platforms_2:
-                    sprite.rect.y -= 10
+                for sprite in self.all_sprites_2:
+                    sprite.rect.y -= max(self.players[1].vel.y, 5)
                     if sprite.rect.bottom < 0:
                         sprite.kill()
+                    if len(self.platforms_2)  == 0:
+                        self.playing_2 = False
 
 
         # Increase level difficulty
@@ -224,16 +229,22 @@ class Game:
                     self.players[0].vel.y = - BOOST
         if self.multiplayer and self.playing_2:
             spring_hits2 = pg.sprite.spritecollide(self.players[1], self.springs_2, False)
-            for spring in spring_hits2:
-                if spring.type == 'spring':
-                    spring.animate()
+            for spring1 in spring_hits2:
+                if spring1.type == 'spring':
+                    spring1.animate()
                     self.players[1].vel.y = - BOOST
 
         #     Monster collide with bullet
-        bullet_hits = pg.sprite.groupcollide(self.bullets, self.monsters, True, True)
-        for hit in bullet_hits:
-            hit.kill()
-            self.score[0] += 50
+        if self.playing:
+            bullet_hits = pg.sprite.groupcollide(self.bullets, self.monsters, True, True)
+            for hit in bullet_hits:
+                hit.kill()
+                self.score[0] += 50
+        if self.playing_2 and self.multiplayer:
+            bullet_hits1 = pg.sprite.groupcollide(self.bullets_2, self.monsters, True, True)
+            for hit in bullet_hits1:
+                hit.kill()
+                self.score[1] += 50
 
     def events(self):
 
@@ -247,16 +258,24 @@ class Game:
                 self.running = False
 
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_UP:
-                    if self.now - self.bullet_timer > 500:
-                        self.bullet_timer = self.now
-                        Bullet(self, self.players[0])
+                if self.playing:
+                    if event.key == pg.K_UP:
+                        if self.now - self.bullet_timer > 500:
+                            self.bullet_timer = self.now
+                            Bullet(self, self.players[0])
+                if self.playing_2 and self.multiplayer:
+                    if event.key == pg.K_w:
+                        if self.now - self.bullet_timer_2 > 500:
+                            self.bullet_timer_2 = self.now
+                            Bullet(self, self.players[1])
 
     def draw(self):
         # Game Loop - draw
         # self.screen.fill(BGCOLOR)
         self.background_sprite.draw(self.screen)
-        self.all_sprites.draw(self.screen)
+        pg.draw.rect(self.screen,BLACK,[WIDTH,0,20,HEIGHT])
+        self.all_sprites_1.draw(self.screen)
+        self.all_sprites_2.draw(self.screen)
         self.screen.blit(self.players[0].image, self.players[0].rect)
         # Draw score
         self.draw_text(str(self.score[0]), 22, BLACK, WIDTH / 2, 20)
@@ -333,6 +352,8 @@ class Game:
             self.highscore = int(score_str)
         except:
             self.highscore = 0
+
+
 
 
 g = Game()
