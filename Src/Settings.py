@@ -13,9 +13,12 @@ PLAYER_FRICTION = -0.09
 PlAYER_JUMP = 22.5
 
 # Starting platforms
-PLATFORM_LIST = [(WIDTH/2 - 40, HEIGHT - 40), (0, HEIGHT / 2),
+PLATFORM_LIST_1 = [(WIDTH/2 - 40, HEIGHT - 40), (0, HEIGHT / 2),
                  (WIDTH/3, HEIGHT / 3), (WIDTH/2 + 40, HEIGHT / 4 - 15),
                  (WIDTH/4, HEIGHT / 5), (WIDTH/1.5, HEIGHT / 1.5), (WIDTH/1.25, HEIGHT / 1.25)]
+PLATFORM_LIST_2 = [(WIDTH*3/2 + 10, HEIGHT - 40), (WIDTH + 20, HEIGHT / 2),
+                 (WIDTH * 4/3, HEIGHT / 3), (WIDTH*3/2 + 40, HEIGHT / 4 - 15),
+                 (WIDTH*5/4, HEIGHT / 5), (WIDTH*9/5, HEIGHT / 1.5), (WIDTH*9/4, HEIGHT / 1.25)]
 
 PLATFORM_AMOUNT = 15
 

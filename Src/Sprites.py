@@ -7,17 +7,22 @@ vec = pg.math.Vector2
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, x1, x2, second=False):
         self._layer = 1
+        # Width
+        self.x1 = x1
+        # 0
+        self.x2 = x2
         pg.sprite.Sprite.__init__(self)
         self.game = game  #
         self.last_tick = 0
+        self.second = second
         self.side_frames = [pg.image.load(DOODLE_RIGHT), pg.image.load(DOODLE_LEFT), pg.image.load(DOODLE_UP)]
         self.image = self.side_frames[0]
         # self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-        self.pos = vec(WIDTH / 2, HEIGHT - 50)
+        self.pos = vec(x, y)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
 
@@ -26,17 +31,30 @@ class Player(pg.sprite.Sprite):
         now = pg.time.get_ticks()
         keys = pg.key.get_pressed()
         bottom = self.rect.bottom
-        if keys[pg.K_LEFT]:
-            self.acc.x = -PLAYER_ACC
-            self.image = self.side_frames[1]
-        if keys[pg.K_RIGHT]:
-            self.acc.x = PLAYER_ACC
-            self.image = self.side_frames[0]
-        if keys[pg.K_UP]:
-            self.image = self.side_frames[2]
-            if now - self.last_tick > 300:
-                self.last_tick = now
+        if not self.second:
+            if keys[pg.K_LEFT]:
+                self.acc.x = -PLAYER_ACC
                 self.image = self.side_frames[1]
+            if keys[pg.K_RIGHT]:
+                self.acc.x = PLAYER_ACC
+                self.image = self.side_frames[0]
+            if keys[pg.K_UP]:
+                self.image = self.side_frames[2]
+                if now - self.last_tick > 300:
+                    self.last_tick = now
+                    self.image = self.side_frames[1]
+        else:
+            if keys[pg.K_a]:
+                self.acc.x = -PLAYER_ACC
+                self.image = self.side_frames[1]
+            if keys[pg.K_d]:
+                self.acc.x = PLAYER_ACC
+                self.image = self.side_frames[0]
+            if keys[pg.K_w]:
+                self.image = self.side_frames[2]
+                if now - self.last_tick > 300:
+                    self.last_tick = now
+                    self.image = self.side_frames[1]
         self.rect = self.image.get_rect()
         self.rect.bottom = bottom
 
@@ -46,10 +64,10 @@ class Player(pg.sprite.Sprite):
         self.vel += self.acc
         self.pos += self.vel + PLAYER_GRAVITY * self.acc
         # wrap around the sides of the screen
-        if self.pos.x > WIDTH:
-            self.pos.x = 0
-        if self.pos.x < 0:
-            self.pos.x = WIDTH
+        if self.pos.x > self.x1:
+            self.pos.x = self.x2
+        if self.pos.x < self.x2:
+            self.pos.x = self.x1
 
         self.rect.midbottom = self.pos
         self.mask = pg.mask.from_surface(self.image)
@@ -57,15 +75,22 @@ class Player(pg.sprite.Sprite):
     def jump(self):
         #       Jump only when standing on anything
         self.rect.y += 1
-        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+        if not self.second:
+            hits = pg.sprite.spritecollide(self, self.game.platforms_1, False)
+        else:
+            hits2 = pg.sprite.spritecollide(self, self.game.platforms_2, False)
         self.rect.y -= 1
-        if hits:
+        if self.second and hits2:
+            self.vel.y -= PlAYER_JUMP
+        elif not self.second and hits:
             self.vel.y -= PlAYER_JUMP
 
 
 class Platform(pg.sprite.Sprite):
-    def __init__(self, game, x, y, brown=False):
+    def __init__(self, game, x, y, width, end, brown=False):
         self.collision = brown
+        self.width = width
+        self.end = end
         self._layer = 2
         self.moment = 0
         pg.sprite.Sprite.__init__(self)
@@ -102,7 +127,7 @@ class Platform(pg.sprite.Sprite):
 
         if self.type == 'blue':
             self.rect.x += self.vx
-            if self.rect.x > WIDTH - 50 or self.rect.x < 0:
+            if self.rect.x > self.end - 50 or self.rect.x < self.width:
                 self.vx *= -1
         if self.type == 'brown':
             if self.collision:
@@ -123,7 +148,7 @@ class Platform(pg.sprite.Sprite):
 
 
 class Background(pg.sprite.Sprite):
-    def __init__(self, image, secondPlayer = False):
+    def __init__(self, image, secondPlayer=False):
         self._layer = 3
         pg.sprite.Sprite.__init__(self)
         self.image = pg.image.load(image).convert()
@@ -131,15 +156,18 @@ class Background(pg.sprite.Sprite):
         if not secondPlayer:
             self.rect.x, self.rect.y = 0, 0
         else:
-            self.rect.x, self.rect.y = WIDTH, 0
+            self.rect.x, self.rect.y = WIDTH + 20, 0
 
 
 class Spring(pg.sprite.Sprite):
     def __init__(self, game, platform):
         self._layer = 2
-        self.groups = game.all_sprites, game.springs
-        pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
+        if not self.game.multiplayer:
+            self.groups = game.all_sprites, game.springs
+        else:
+            self.groups = game.all_sprites, game.springs_2
+        pg.sprite.Sprite.__init__(self, self.groups)
         self.last_update = 0
         self.plat = platform
         self.type = choice(['spring'])
@@ -151,7 +179,10 @@ class Spring(pg.sprite.Sprite):
 
     def update(self):
         self.rect.bottom = self.plat.rect.top + 2
-        if not self.game.platforms.has(self.plat):
+        if self.game.multiplayer:
+            if not self.game.platforms_2.has(self.plat):
+                self.kill()
+        if not self.game.platforms_1.has(self.plat):
             self.kill()
 
     def animate(self):
@@ -166,9 +197,17 @@ class Spring(pg.sprite.Sprite):
 
 
 class Enemy(pg.sprite.Sprite):
-    def __init__(self, game):
+    def __init__(self, game, x1, x2, second=False):
         self._layer = 1
-        self.groups = game.monsters, game.all_sprites
+        # Width
+        self.x1 = x1
+        # Zero
+        self.x2 = x2
+        self.second = second
+        if self.second:
+            self.groups = game.monsters, game.all_sprites
+        else:
+            self.groups = game.monsters_2, game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
 
@@ -176,9 +215,9 @@ class Enemy(pg.sprite.Sprite):
                        pg.transform.scale(pg.image.load(MONSTER_DOWN), (83, 47))]
         self.image = self.images[0]
         self.rect = self.image.get_rect()
-        self.rect.centerx = choice([-100, WIDTH + 100])
+        self.rect.centerx = choice([self.x2, self.x1 - 10])
         self.vx = randrange(3, 6)
-        if self.rect.centerx > WIDTH:
+        if self.rect.centerx > self.x1 - 30:
             self.vx *= -1
         self.rect.y = randrange(HEIGHT / 2)
         self.vy = 0
@@ -198,7 +237,7 @@ class Enemy(pg.sprite.Sprite):
         self.rect.center = center
         self.mask = pg.mask.from_surface(self.image)
         self.rect.y += self.vy
-        if self.rect.left > WIDTH + 100 or self.rect.right < -100:
+        if self.rect.left > self.x1 + 10 or self.rect.right < self.x2:
             self.kill()
 
 
